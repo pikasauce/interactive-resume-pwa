@@ -1,0 +1,23 @@
+{
+  "name": "release-automation-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An installable DevOps and Release Engineer resume PWA with its delivery system in the repository.",
+  "scripts": {
+    "start:api": "node services/order-api/server.js",
+    "start:ui": "node apps/manager-ui/server.js",
+    "dev": "concurrently \"npm run start:api\" \"npm run start:ui\"",
+    "lint": "node --check services/order-api/server.js && node --check apps/manager-ui/server.js && node --check apps/manager-ui/app.js && node --check apps/manager-ui/service-worker.js",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "ci:check": "npm run lint && npm run test:e2e"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "concurrently": "^9.0.1"
+  }
+}
