@@ -4,10 +4,10 @@
   "private": true,
   "description": "An installable DevOps and Release Engineer resume PWA with its delivery system in the repository.",
   "scripts": {
-    "start:api": "node services/order-api/server.js",
-    "start:ui": "node apps/manager-ui/server.js",
+    "start:api": "node services/resume-api/server.js",
+    "start:ui": "node apps/resume-ui/server.js",
     "dev": "concurrently \"npm run start:api\" \"npm run start:ui\"",
-    "lint": "node --check services/order-api/server.js && node --check apps/manager-ui/server.js && node --check apps/manager-ui/app.js && node --check apps/manager-ui/service-worker.js",
+    "lint": "node --check services/resume-api/server.js && node --check apps/resume-ui/server.js && node --check apps/resume-ui/app.js && node --check apps/resume-ui/service-worker.js",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "ci:check": "npm run lint && npm run test:e2e"

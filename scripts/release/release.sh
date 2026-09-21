@@ -14,8 +14,8 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && (! git diff --quiet ||
 fi
 
 mkdir -p "$TARGET_DIR"
-cp -R apps/manager-ui "$TARGET_DIR/ui"
-cp -R services/order-api "$TARGET_DIR/api"
+cp -R apps/resume-ui "$TARGET_DIR/ui"
+cp -R services/resume-api "$TARGET_DIR/api"
 cp README.md "$TARGET_DIR/README.md"
 
 cat > "$TARGET_DIR/release-notes.txt" <<EOF

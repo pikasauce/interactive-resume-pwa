@@ -29,8 +29,8 @@ Read the in-app tutorial at `http://localhost:3000/tutorial.html`. It is the rec
 ## Project map
 
 ```text
-apps/manager-ui/       Resume PWA, static server, manifest, service worker, tutorial
-services/order-api/    Express REST/JSON release-signal API
+apps/resume-ui/        Resume PWA, static server, manifest, service worker, tutorial
+services/resume-api/   Express REST/JSON release-signal API
 tests/e2e/             Playwright quality gates
 .github/workflows/     CI workflow
 scripts/release/       Bash packaging and release notes
