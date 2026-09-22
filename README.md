@@ -9,6 +9,8 @@ The app is intentionally small enough to explain in an interview, while showing 
 - PWA manifest and service-worker cache for an installable/offline-ready app shell
 - Playwright end-to-end checks as executable quality gates
 - GitHub Actions CI validation and a Bash release-artifact script
+- a `render.yaml` Blueprint deploying to Render, triggered by CI only after
+  quality gates pass
 - a guided tutorial with safe next exercises
 
 ## Start here
@@ -26,6 +28,17 @@ bash scripts/release/release.sh demo-1
 
 Read the in-app tutorial at `http://localhost:3000/tutorial.html`. It is the recommended step-by-step path for learning each layer and extending it with confidence.
 
+## Deployment
+
+Deployed to Render from `render.yaml` (see `docs/runbook.md` for the
+one-time setup and full deployment process). Once set up, CI deploys
+automatically on every push to `main`, but only after lint and Playwright
+pass — deploys require two GitHub Actions secrets, `RENDER_DEPLOY_HOOK_RESUME_API`
+and `RENDER_DEPLOY_HOOK_RESUME_UI`, which are skipped (not failed) if unset.
+
+- Résumé: _add the live `resume-ui` Render URL here once deployed_
+- Release-signal API: _add the live `resume-api` Render URL here once deployed_
+
 ## Project map
 
 ```text
@@ -34,6 +47,8 @@ services/resume-api/   Express REST/JSON release-signal API
 tests/e2e/             Playwright quality gates
 .github/workflows/     CI workflow
 scripts/release/       Bash packaging and release notes
+scripts/render/        Build-time config generator for the resume-ui Render deploy
+render.yaml            Render Blueprint (Infrastructure as Code) for both services
 docs/runbook.md        Operational handoff and rollback guidance
 job-files/             Source job posting and original résumé (private inputs)
 ```

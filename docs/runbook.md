@@ -6,8 +6,9 @@ This project demonstrates a lightweight release and QA workflow for the résumé
 
 ## Environments
 
-- Local: used for development and validation
-- Staging: used for the simulated release flow
+- Local: used for development and validation (`npm run dev`)
+- Production: two Render services deployed from `render.yaml` —
+  `resume-ui` (Static Site) and `resume-api` (Web Service)
 
 ## Configuring the resume-ui → resume-api connection
 
@@ -21,29 +22,43 @@ the resume-ui service, so it can be pointed at the deployed resume-api's URL.
 
 ## Deployment process
 
-1. Ensure the working tree is clean.
-2. Run validation locally:
-   ```bash
-   npm install
-   npm run lint
-   npm run test:e2e
-   ```
-3. Create a release artifact:
-   ```bash
-   bash scripts/release/release.sh
-   ```
-4. Validate that the artifact exists in the generated dist folder.
-5. Deploy the artifact to the staging environment.
-6. Confirm the résumé app loads, the release signal reports `ready`, and the API health endpoint responds.
+One-time setup, done once via the Render dashboard (not automated, requires
+a Render account with repo access):
+
+1. Create a new Blueprint in Render pointing at this repository; it reads
+   `render.yaml` and creates the `resume-ui` and `resume-api` services.
+2. Set `resume-ui`'s `API_BASE_URL` env var to `resume-api`'s live Render
+   URL (`https://resume-api-<slug>.onrender.com`), which triggers a
+   `resume-ui` rebuild so `config.js` picks it up.
+3. Copy each service's Deploy Hook URL (Settings → Deploy Hook) and store
+   them as GitHub Actions secrets: `RENDER_DEPLOY_HOOK_RESUME_API` and
+   `RENDER_DEPLOY_HOOK_RESUME_UI`.
+
+After that, every push to `main`:
+
+1. Runs lint, Playwright e2e, and the release-artifact script in CI.
+2. Only if all of that passes, CI calls both Render Deploy Hooks, which
+   triggers Render to rebuild and deploy `resume-ui` and `resume-api` from
+   the latest `main`. (`autoDeployTrigger: off` in `render.yaml` means
+   Render itself never deploys on push — CI's quality gates are what
+   trigger a deploy.)
+3. Confirm the résumé app loads at the `resume-ui` URL, the release signal
+   reports `ready`, and `resume-api`'s `/health` endpoint responds.
+
+Note: `apps/resume-ui/server.js` (the plain Node `http` server) is only
+used for local dev via `npm run dev` — in production, `resume-ui` is a
+static site served directly by Render's CDN, not that server.
 
 ## Rollback
 
-If deployment or validation fails:
+If a deploy is unhealthy:
 
-1. Restore the previous known-good artifact.
-2. Redeploy the last working version.
-3. Confirm the app is healthy through smoke checks.
-4. Review the release notes and identify the cause before retrying.
+1. In the Render dashboard, open the affected service's Deploys tab and
+   click "Redeploy" on the last known-good deploy.
+2. Confirm the app is healthy through smoke checks (résumé loads, release
+   signal `ready`, `/health` responds).
+3. Review the failing CI run's logs and the generated release notes to
+   identify the cause before pushing a fix.
 
 ## Quality gate expectations
 
