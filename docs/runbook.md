@@ -9,6 +9,16 @@ This project demonstrates a lightweight release and QA workflow for the résumé
 - Local: used for development and validation
 - Staging: used for the simulated release flow
 
+## Configuring the resume-ui → resume-api connection
+
+`apps/resume-ui/app.js` reads the resume-api URL from `window.API_BASE_URL`,
+which is set by `apps/resume-ui/config.js`. Locally, `config.js` is committed
+with a `http://localhost:3001` default and `npm run dev` needs no extra
+configuration. When resume-ui is deployed separately from resume-api (e.g. to
+Render), `scripts/render/generate-resume-ui-config.js` regenerates
+`config.js` at build time from the `API_BASE_URL` environment variable set on
+the resume-ui service, so it can be pointed at the deployed resume-api's URL.
+
 ## Deployment process
 
 1. Ensure the working tree is clean.
