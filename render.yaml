@@ -1,0 +1,26 @@
+services:
+  # Static résumé site. Always-on (Render static sites are served from a
+  # CDN and never spin down), so a recruiter never hits a cold start.
+  # generate-resume-ui-config.js writes apps/resume-ui/config.js from the
+  # API_BASE_URL env var below, pointing the deployed page at resume-api.
+  - type: web
+    name: resume-ui
+    runtime: static
+    autoDeployTrigger: off
+    buildCommand: node scripts/render/generate-resume-ui-config.js
+    staticPublishPath: apps/resume-ui
+    envVars:
+      - key: API_BASE_URL
+        sync: false
+
+  # JSON release-signal / ticket API. Free-tier web services spin down
+  # after ~15 minutes idle; resume-ui's fetch has a 4s timeout and falls
+  # back gracefully, so a cold start just delays the "release signal" line.
+  - type: web
+    name: resume-api
+    runtime: node
+    plan: free
+    autoDeployTrigger: off
+    buildCommand: npm ci
+    startCommand: npm run start:api
+    healthCheckPath: /health

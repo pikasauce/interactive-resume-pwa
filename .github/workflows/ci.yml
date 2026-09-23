@@ -9,6 +9,11 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      # Mirrored into env because the `secrets` context isn't available in
+      # step-level `if:` conditions, only in `run:`/`with:` etc.
+      RENDER_DEPLOY_HOOK_RESUME_API: ${{ secrets.RENDER_DEPLOY_HOOK_RESUME_API }}
+      RENDER_DEPLOY_HOOK_RESUME_UI: ${{ secrets.RENDER_DEPLOY_HOOK_RESUME_UI }}
 
     steps:
       - name: Check out code
@@ -34,3 +39,14 @@ jobs:
 
       - name: Package validation
         run: bash scripts/release/release.sh ci-${{ github.run_number }}
+
+      # Deploys only fire on main after lint + e2e have already passed above,
+      # and only once the Render Deploy Hook secrets exist (see docs/runbook.md) —
+      # until then these steps are skipped rather than failing the build.
+      - name: Deploy resume-api to Render
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && env.RENDER_DEPLOY_HOOK_RESUME_API != ''
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_RESUME_API"
+
+      - name: Deploy resume-ui to Render
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && env.RENDER_DEPLOY_HOOK_RESUME_UI != ''
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_RESUME_UI"
