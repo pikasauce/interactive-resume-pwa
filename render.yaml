@@ -6,7 +6,6 @@ services:
   - type: web
     name: resume-ui
     runtime: static
-    plan: free
     autoDeployTrigger: off
     buildCommand: node scripts/render/generate-resume-ui-config.js
     staticPublishPath: apps/resume-ui
