@@ -36,8 +36,8 @@ automatically on every push to `main`, but only after lint and Playwright
 pass — deploys require two GitHub Actions secrets, `RENDER_DEPLOY_HOOK_RESUME_API`
 and `RENDER_DEPLOY_HOOK_RESUME_UI`, which are skipped (not failed) if unset.
 
-- Résumé: _add the live `resume-ui` Render URL here once deployed_
-- Release-signal API: _add the live `resume-api` Render URL here once deployed_
+- Résumé: https://resume-ui-6n6h.onrender.com
+- Release-signal API: https://resume-api-3pl5.onrender.com
 
 ## Project map
 
