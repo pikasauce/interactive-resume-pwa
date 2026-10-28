@@ -43,10 +43,21 @@ services/resume-api/   Express REST/JSON release-signal API
 tests/e2e/             Playwright quality gates
 .github/workflows/     CI workflow
 scripts/release/       Bash packaging and release notes
+scripts/pdf/           Generates the shareable PDF résumé from the page
 scripts/render/        Build-time config generator for the resume-ui Render deploy
 render.yaml            Render Blueprint (Infrastructure as Code) for both services
 docs/runbook.md        Operational handoff and rollback guidance
 ```
+
+## PDF résumé
+
+A shareable one-page PDF is generated from the same page and print stylesheet, so the web and file versions never drift apart:
+
+```bash
+npm run build:pdf
+```
+
+This writes `apps/resume-ui/Enrique-Pujol-Resume.pdf`, which the app serves at `/Enrique-Pujol-Resume.pdf` (linked as “Download PDF” in the hero). Re-run it and commit the PDF after editing résumé content.
 
 ## Deployment
 
